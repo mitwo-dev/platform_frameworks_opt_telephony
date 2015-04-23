@@ -1178,17 +1178,21 @@ public class SubscriptionController extends ISub.Stub {
             if (DBG) logdl("[getPhoneId] asked for default subId=" + subId);
         }
 
+        if (subId >= DUMMY_SUB_ID_BASE) {
+            logd("getPhoneId,  received summy subId " + subId);
+            return subId - DUMMY_SUB_ID_BASE;
+        } else if (subId < 0) {
+            phoneId = (int) (-1 - subId);
+            if (VDBG) logdl("[getPhoneId]- map subId=" + subId + " phoneId=" + phoneId);
+            return phoneId;
+        }
+
         if (!SubscriptionManager.isValidSubscriptionId(subId)) {
             if (DBG) {
                 logdl("[getPhoneId]- invalid subId return="
                         + SubscriptionManager.INVALID_PHONE_INDEX);
             }
             return SubscriptionManager.INVALID_PHONE_INDEX;
-        }
-
-        if (subId >= DUMMY_SUB_ID_BASE) {
-            logd("getPhoneId,  received dummy subId " + subId);
-            return subId - DUMMY_SUB_ID_BASE;
         }
 
         int size = mSlotIdxToSubId.size();
